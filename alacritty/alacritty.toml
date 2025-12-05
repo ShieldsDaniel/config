@@ -1,5 +1,3 @@
-theme = "Tokyonight_Night"
-
 [colors]
 draw_bold_text_with_bright_colors = true
 
@@ -63,10 +61,6 @@ foreground = "#CDD6F4"
 background = "#A6E3A1"
 foreground = "#1E1E2E"
 
-[colors.search.footer_bar]
-background = "#A6ADC8"
-foreground = "#1E1E2E"
-
 [colors.search.matches]
 background = "#A6ADC8"
 foreground = "#1E1E2E"
@@ -93,10 +87,6 @@ style = "Bold"
 family = "JetBrainsMono NF"
 style = "Bold Italic"
 
-[font.glyph_offset]
-x = 0
-y = 0
-
 [font.italic]
 family = "JetBrainsMono NF"
 style = "Italic"
@@ -104,6 +94,10 @@ style = "Italic"
 [font.normal]
 family = "JetBrainsMono NF"
 style = "Regular"
+
+[font.glyph_offset]
+x = 0
+y = 0
 
 [font.offset]
 x = 0
@@ -149,7 +143,7 @@ save_to_clipboard = true
 semantic_escape_chars = """,│`|:"' ()[]{}<>"""
 
 [terminal.shell]
-args = ["-l", "-c", "tmux attach || tmux new -s '󰘧'"]
+# args = ["-l", "-c", "tmux attach || tmux new -s '󰘧'"]
 program = "/bin/zsh"
 
 [window]
