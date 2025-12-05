@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+which_arg="$1"
+shift
+
+while [[ "$#" -gt 0 ]]; do
+    case "$1" in
+
+        -d|--dry-run)
+            if [[ "$which_arg" == "dry-run" ]]; then
+                echo true
+                exit 0
+            fi
+            shift
+            ;;
+
+        -r|--reset)
+            if [[ "$which_arg" == "reset" ]]; then
+                echo true
+                exit 0
+            fi
+            shift
+            ;;
+
+        -y|--yes)
+            if [[ "$which_arg" == "yes-to-all" ]]; then
+                echo true
+                exit 0
+            fi
+            shift
+            ;;
+    esac
+done
+
+echo false
+exit 1

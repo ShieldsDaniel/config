@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+dry_run=false
+yes_to_all=false
+cmd=()
+
+while [[ "$#" -gt 0 ]]; do
+    arg="$(echo "$1" | xargs)"
+    if [[ -z "$arg" ]]; then
+        shift
+        continue
+    fi
+
+    case "$arg" in
+
+        -d|--dry-run)
+            dry_run=true
+            shift
+            ;;
+
+        -y|--yes)
+            yes_to_all=true
+            shift
+            ;;
+
+        --)
+            shift
+            cmd=("$@")
+            break
+            ;;
+
+        *)
+            cmd+=("$1")
+            shift
+            ;;
+    esac
+done
+
+[[ ${#cmd[@]} -gt 0 ]] || { echo "No command given."; exit 2; }
+
+quote_cmd() {
+    local out=(); for p in "${cmd[@]}"; do out+=("$(printf '%q' "$p")"); done
+    printf '%s\n' "${out[*]}"
+}
+
+if [[ "$dry_run" == true ]]; then
+    echo "[DRY RUN] $(quote_cmd)"
+    exit 0
+fi
+
+if [[ "$yes_to_all" == true ]]; then
+    "${cmd[@]}"; exit $?
+fi
+
+while true; do
+    read -r -p "Proceed? [y/n] " reply
+    case "$reply" in
+
+        [yY]|[yY][eE][sS])
+            "${cmd[@]}"; exit $?
+            ;;
+
+        [nN]|[nN][oO])
+            echo "Aborted."
+            exit 1
+            ;;
+
+        *)
+            echo "Please answer 'y' or 'n'."
+            ;;
+    esac
+done

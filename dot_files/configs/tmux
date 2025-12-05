@@ -6,14 +6,31 @@ current_dir="$(dirname "$current_file")"
 config_dir="$(cd "$current_dir/../../" && pwd -P)"
 my_tmux_config_dir="$config_dir/tmux"
 backup_dir="$config_dir/dot_files/backups"
+run_confirm="$config_dir/dot_files/utils/run_confirm_command"
+parse_arg="$config_dir/dot_files/utils/parse_arg"
 
-if [[ "$command" == "reset" ]]; then
+reset=$($parse_arg "reset" "$@")
+yes_to_all=$($parse_arg "yes-to-all" "$@")
+dry_run=$($parse_arg "dry-run" "$@")
+
+if [[ "$yes_to_all" == true ]]; then
+    yes_to_all="--yes"
+else
+    yes_to_all=""
+fi
+if [[ "$dry_run" == true ]]; then
+    dry_run="--dry-run"
+else
+    dry_run=""
+fi
+
+if [[ "$reset" == true ]]; then
     echo "Resetting to previous tmux config..."
-    cp "$backup_dir/tmux.conf" "$HOME/.tmux.conf"
+    $run_confirm "$yes_to_all" "$dry_run" -- cp "$backup_dir/tmux.conf" "$HOME/.tmux.conf" || exit 1
 else 
     echo "Backing up current tmux config file..."
-    cp "$HOME/.tmux.conf" "$backup_dir/tmux.conf"
+    $run_confirm "$yes_to_all" "$dry_run" -- cp "$HOME/.tmux.conf" "$backup_dir/tmux.conf" || exit 1
     echo "Copying my tmux config file to system config directory..."
-    cp "$my_tmux_config_dir/tmux.conf" "$HOME/.tmux.conf"
+    $run_confirm "$yes_to_all" "$dry_run" -- cp "$my_tmux_config_dir/tmux.conf" "$HOME/.tmux.conf" || exit 1
 fi
 

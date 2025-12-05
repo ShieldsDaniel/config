@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+while true; do
+    read -r -p "Proceed? [y/n] " reply
+    case "$reply" in
+        [yY]|[yY][eE][sS]) exit 0 ;;
+        [nN]|[nN][oO])     exit 1 ;;
+        *) echo "Please answer 'y' or 'n'." ;;
+    esac
+done

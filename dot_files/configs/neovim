@@ -8,13 +8,30 @@ my_neovim_config_dir="$config_dir/nvim"
 system_config_dir="$HOME/.config"
 old_neovim_config_dir="$system_config_dir/nvim"
 backup_dir="$config_dir/dot_files/backups"
+run_confirm="$config_dir/dot_files/utils/run_confirm_command"
+parse_arg="$config_dir/dot_files/utils/parse_arg"
 
-if [[ "$command" == "reset" ]]; then
+reset=$($parse_arg "reset" "$@")
+yes_to_all=$($parse_arg "yes-to-all" "$@")
+dry_run=$($parse_arg "dry-run" "$@")
+
+if [[ "$yes_to_all" == true ]]; then
+    yes_to_all="--yes"
+else
+    yes_to_all=""
+fi
+if [[ "$dry_run" == true ]]; then
+    dry_run="--dry-run"
+else
+    dry_run=""
+fi
+
+if [[ "$reset" == true ]]; then
     echo "Resetting to previous Neovim config..."
-    cp -r "$backup_dir/nvim" "$system_config_dir"
+    $run_confirm "$yes_to_all" "$dry_run" -- cp -r "$backup_dir/nvim" "$system_config_dir" || exit 1
 else 
     echo "Backing up current Neovim config..."
-    cp -r "$old_neovim_config_dir" "$backup_dir"
+    $run_confirm "$yes_to_all" "$dry_run" -- cp -r "$old_neovim_config_dir" "$backup_dir" || exit 1
     echo "Copying my Neovim config to system config directory..."
-    cp -r "$my_neovim_config_dir" "$system_config_dir"
+    $run_confirm "$yes_to_all" "$dry_run" -- cp -r "$my_neovim_config_dir" "$system_config_dir" || exit 1
 fi
