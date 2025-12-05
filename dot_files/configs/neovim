@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+command=$1
+current_file="$(readlink -f "$0")"
+current_dir="$(dirname "$current_file")"
+config_dir="$(cd "$current_dir/../../" && pwd -P)"
+my_neovim_config_dir="$config_dir/nvim"
+system_config_dir="$HOME/.config"
+old_neovim_config_dir="$system_config_dir/nvim"
+backup_dir="$config_dir/dot_files/backups"
+
+if [[ "$command" == "reset" ]]; then
+    echo "Resetting to previous Neovim config..."
+    cp -r "$backup_dir/nvim" "$system_config_dir"
+else 
+    echo "Backing up current Neovim config..."
+    cp -r "$old_neovim_config_dir" "$backup_dir"
+    echo "Copying my Neovim config to system config directory..."
+    cp -r "$my_neovim_config_dir" "$system_config_dir"
+fi

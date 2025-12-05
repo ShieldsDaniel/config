@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+OS=$(~/./config/setup/tasks-old/os.sh)
+HOME_DIR=~/
+CURRENT_DIR=$(pwd)
+
+if [[ $OS == "LINUX" ]] || [[ $OS == "OSX" ]]; then
+    which alacritty 1> /dev/null || which cargo 1> /dev/null && cargo install alacritty
+    ln -sf $CURRENT_DIR/alacritty $HOME_DIR/.config/
+fi
+
+if [[ $OS == "LINUX" ]]; then
+    sudo snap install insomnia
+fi
+
+if [[ $OS == "OSX" ]];
+    brew install --cask insomnia
+fi
+

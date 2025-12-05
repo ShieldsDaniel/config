@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+pkg="$1"
+external_pkg_name="$2"
+
+home_dir=~/
+setup_dir="$home_dir/personal/config/setup"
+this_dir="$setup_dir/utils"
+
+if [ -z "$external_pkg_name" ]; then
+    external_pkg_name="$pkg"
+fi
+
+cargo_is_installed=$($this_dir/is_already_installed cargo)
+
+if [[ $cargo_is_installed == "False" ]]; then
+    echo "❌ Cargo is not installed. Please install Rust and Cargo first."
+    exit 1
+fi
+
+pkg_is_installed=$($this_dir/is_already_installed "$pkg")
+
+if [[ $pkg_is_installed == "False" ]]; then
+    echo "🔧 Installing $pkg via cargo..."
+    cargo install "$pkg"
+else
+    echo "✅ $pkg is already installed."
+fi

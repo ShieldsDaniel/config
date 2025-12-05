@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+os=$1
+
+home_dir=~/
+setup_dir="$home_dir/personal/config/setup"
+
+$setup_dir/utils/ensure_pkg_installed $os tmux
+# TODO: Add tpm as well as the config copy part

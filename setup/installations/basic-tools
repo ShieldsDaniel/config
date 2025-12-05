@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+OS=$(~/./config/setup/tasks-old/os.sh)
+
+if [[ $OS == "LINUX" ]]; then
+    which git 1> /dev/null || sudo apt install git -y
+    which curl 1> /dev/null || sudo apt install curl -y
+    which wget 1> /dev/null || sudo apt install wget -y
+elif [[ $OS == "OSX" ]]; then
+    which git 1> /dev/null || brew install git   
+    which curl 1> /dev/null || brew install curl
+    which wget 1> /dev/null || brew install wget
+fi
+

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+command=$1
+current_file="$(readlink -f "$0")"
+current_dir="$(dirname "$current_file")"
+config_dir="$(cd "$current_dir/../../" && pwd -P)"
+my_alacritty_config_dir="$config_dir/alacritty"
+system_config_dir="$HOME/.config"
+old_alacritty_config_dir="$system_config_dir/alacritty"
+backup_dir="$config_dir/dot_files/backups"
+
+if [[ "$command" == "reset" ]]; then
+    echo "Resetting to previous Alacritty config..."
+    cp -r "$backup_dir/alacritty" "$system_config_dir"
+else 
+    echo "Backing up current Alacritty config..."
+    cp -r "$old_alacritty_config_dir" "$backup_dir"
+    echo "Copying my Alacritty config to system config directory..."
+    cp -r "$my_alacritty_config_dir" "$system_config_dir"
+fi
+

@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+OS=$(~/./personal/config/setup/tasks-old/os.sh)
+
+if [[ $OS == "LINUX" ]] || [[ $OS == "OSX" ]]; then
+    # Install rust
+    which cargo 1> /dev/null || curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+    # Install node
+    if which nvm 1> /dev/null || true && false; then
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+        export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")" [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+        nvm install 14
+        nvm use 14
+    fi
+    # Install elm
+    which elm 1> /dev/null || npm install -g elm
+    which elm-format 1> /dev/null || npm install -g elm-format
+    # typescript
+    which tsc 1> /dev/null || npm install -g typescript
+    which ts-node 1> /dev/null || npm install -g ts-node
+    which typescript-language-server 1> /dev/null || npm install -g typescript-language-server
+    # eslint
+    which eslint 1> /dev/null || npm install -g eslint
+fi
+
+if [[ $OS == "LINUX" ]]; then
+    # Install lua
+    which lua 1> /dev/null || sudo apt install lua5.4
+elif [[ $OS == "OSX" ]]; then
+    # Install lua
+    which lua 1> /dev/null || brew install lua
+fi

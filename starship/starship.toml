@@ -1,0 +1,64 @@
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
+format = '''
+$hostname$directory$git_branch$nodejs$rust$elm$elixir$haskell$java$kotlin$fill $time(bold green)
+$character(bold green)'''
+
+# Inserts a blank line between shell prompts
+add_newline = true
+
+[character]
+success_symbol = '[](bold green)'
+error_symbol = '[](bold red)'
+
+# Disable the package module, hiding it from the prompt completely
+[package]
+disabled = false
+
+[directory]
+truncation_length = 5
+truncate_to_repo = false
+read_only = " "
+truncation_symbol = "..."
+
+[git_branch]
+symbol = " "
+format = 'on [$symbol$branch]($style) '
+
+[hostname]
+ssh_only = true
+
+[time]
+disabled = false
+format = '[\[$time\]](bold green) '
+
+[nodejs]
+symbol = "󰎙 "
+
+[rust]
+symbol = "󱘗 "
+
+[elm]
+symbol = " "
+
+[elixir]
+symbol = " "
+
+[haskell]
+symbol = " "
+
+[java]
+symbol = "󰬷 "
+
+[kotlin]
+symbol = " "
+
+[lua]
+symbol = " "
+
+[python]
+symbol = " "
+
+[fill]
+symbol = " "

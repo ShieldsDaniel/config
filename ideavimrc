@@ -1,0 +1,96 @@
+source ~/config/nvim/config/settings.vim
+
+" Plugins
+Plug 'machakann/vim-highlightedyank'
+Plug 'kana/vim-textobj-entire'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-commentary'
+Plug 'kana/vim-textobj-entire'
+Plug 'preservim/nerdtree'
+set quickscope
+
+" Settings
+let mapleader = ' '
+let maplocalleader = ' '
+let hlsearch = 1
+let incsearch = 1
+let relativenumber = 1
+let scrolloff = 8
+let sidescrolloff = 8
+let ignorecase = 1
+let smartcase = 1
+
+" Remaps
+
+" Source dot file to load most recent changes to this file
+nmap <leader>so :so ~/.ideavimrc<CR>
+
+" Move up and down through wrapped lines
+nmap <silent> <expr> k v:count == 0 ? 'gk' : 'k'
+nmap <silent> <expr> j v:count == 0 ? 'gj' : 'j'
+
+" Use Visual mode to move the selected lines up or down
+vmap J <Action>(MoveStatementDown)
+vmap K <Action>(MoveStatementUp)
+
+" Keep cursor centered when moving in larger jumps
+nmap <C-d> <C-d>zz
+nmap <C-u> <C-u>zz
+nmap n nzzzv
+nmap N Nzzzv
+
+" Copy/Paste to/from system clipboard
+nmap <leader>yy '"*yy
+nmap <leader>pp '"*p
+vmap <leader>y '"*y
+xmap <leader>y '"*y
+xmap <leader>p '"_dP
+
+" Clear search highlighting
+nmap <leader>hl :nohl<CR>
+
+" Uils
+imap <C-c> <Esc>
+nmap Q <Nop>
+
+" Good way to search in file using he built-in search functionality (would be good to also include support for *)
+
+" Git next/previous change/hunk. Blame for a line. Maybe reset hunk?
+
+" Remaps for harpoon
+nmap <leader>ha <Action>(AddToHarpoon)
+nmap <leader>ht <Action>(ShowHarpoon)
+nmap <leader>hn <Action>(GotoHarpoon1)
+nmap <leader>he <Action>(GotoHarpoon2)
+nmap <leader>hi <Action>(GotoHarpoon3)
+nmap <leader>ho <Action>(GotoHarpoon4)
+nmap <leader>hh <Action>(GotoHarpoon5)
+
+" LSP-like mappings
+nmap <leader>dn <Action>(GotoNextError)
+nmap <leader>dp <Action>(GotoPreviousError)
+
+nmap <leader>rn <Action>(RenameElement)
+nmap <leader>ca <Action>(ShowIntentionActions)
+
+nmap gd <Action>(GotoDeclaration)
+nmap gr <Action>(GotoDeclaration)
+nmap gi <Action>(GotoDeclaration)
+nmap gt <Action>(GotoTypeDeclaration)
+nmap <leader>do <Action>(QuickJavaDoc)
+nmap <leader>di <Action>(ShowErrorDescription)
+
+" telescope-like mappings
+nmap <leader>sf <Action>(GotoFile)
+nmap <leader>sg <Action>(FindInPath)
+nmap <leader>sd <Action>(ActivateProblemsViewToolWindow)
+nmap <leader>st <Action>(ActivateTODOToolWindow)
+
+" Tab through open window tabs
+nmap <Tab> <Action>(NextTab)
+nmap <S-Tab> <Action>(PreviousTab)
+
+" Comment lines with line comments
+nmap <leader>/ <Action>(CommentByLineComment)
+vmap <leader>/ <Action>(CommentByLineComment)
+

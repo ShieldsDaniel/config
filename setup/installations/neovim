@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+OS=$(~/./personal/config/setup/tasks-old/os.sh)
+
+if [[ $OS == "LINUX" ]]; then
+    sudo apt-get install ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl doxygen
+    which tree-sitter 1> /dev/null || cargo install tree-sitter-cli -y
+elif [[ $OS == "OSX" ]]; then
+    brew install ninja libtool automake cmake pkg-config gettext curl
+    which tree-sitter 1> /dev/null || brew install tree-sitter
+fi
+
+if [[ $OS == "LINUX" ]] || [[ $OS == "OSX" ]]; then
+    HOME_DIR=~/
+    CURRENT_DIR="$(pwd)/../.."
+
+    echo "go to home directory and clone neovim project into temp dir"
+    cd "$HOME_DIR"  || exit
+    git clone https://github.com/neovim/neovim
+
+    echo "go to temp dir and install neovim"
+    cd neovim && make
+    CMAKE_BUILD_TYPE=RelWithDebInfo
+    sudo make install 
+
+    echo "go to home dir and remove temp dir"
+    cd "$HOME_DIR" || exit
+    rm -rf neovim
+
+    # TODO: switch over to use new config copy setup
+    # echo "setup vitual link to config"
+    # ln -sf "$CURRENT_DIR/nvim" "$HOME_DIR/.config"
+fi

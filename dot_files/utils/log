@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# Colors
+RED="\033[31m"
+GREEN="\033[32m"
+YELLOW="\033[33m"
+BLUE="\033[34m"
+MAGENTA="\033[35m"
+CYAN="\033[36m"
+RESET="\033[0m"
+BOLD="\033[1m"
+
+level="$1"; shift
+msg="$*"
+
+case "$level" in
+    error) printf "%b[ERROR]%b %s\n" "$RED" "$RESET" "$msg" >&2 ;;
+    warn)  printf "%b[WARN]%b  %s\n"  "$YELLOW" "$RESET" "$msg" ;;
+    info)  printf "%b[INFO]%b  %s\n"  "$BLUE" "$RESET" "$msg" ;;
+    debug) printf "%b[DEBUG]%b %s\n" "$MAGENTA" "$RESET" "$msg" ;;
+esac

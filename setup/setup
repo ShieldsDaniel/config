@@ -1,0 +1,244 @@
+#!/usr/bin/env bash
+
+###############################################################################
+# Colors
+###############################################################################
+RED="\033[31m"
+GREEN="\033[32m"
+YELLOW="\033[33m"
+BLUE="\033[34m"
+MAGENTA="\033[35m"
+CYAN="\033[36m"
+RESET="\033[0m"
+BOLD="\033[1m"
+
+###############################################################################
+# Logging System
+###############################################################################
+LOG_LEVEL="info"    # overridden by --verbose
+
+log() {
+    local level="$1"; shift
+    local msg="$*"
+
+    declare -A LEVELS=(
+        [error]=0
+        [warn]=1
+        [info]=2
+        [debug]=3
+    )
+
+    [[ ${LEVELS[$level]} -le ${LEVELS[$LOG_LEVEL]} ]] || return 0
+
+    case "$level" in
+        error) printf "%b[ERROR]%b %s\n" "$RED" "$RESET" "$msg" >&2 ;;
+        warn)  printf "%b[WARN]%b  %s\n"  "$YELLOW" "$RESET" "$msg" ;;
+        info)  printf "%b[INFO]%b  %s\n"  "$BLUE" "$RESET" "$msg" ;;
+        debug) printf "%b[DEBUG]%b %s\n" "$MAGENTA" "$RESET" "$msg" ;;
+    esac
+}
+
+###############################################################################
+# Supported OS List
+###############################################################################
+valid_oses=(
+    mac arch fedora alpine redhat suse freebsd debian windows
+)
+valid_os_list=$(printf "%s\n" "${valid_oses[@]}" | paste -sd ',' -)
+
+###############################################################################
+# Help Text
+###############################################################################
+show_help() {
+    echo -e "${BOLD}Usage:${RESET} ${GREEN}${0##*/}${RESET} ${YELLOW}[OPTIONS...]${RESET} ${MAGENTA}[ARGS...]${RESET}"
+    echo
+    echo -e "${BOLD}Options:${RESET}"
+    echo "  -h, --help          Show this help message and exit"
+    echo "  -v, --verbose       Enable debug logging"
+    echo "  -d, --dry-run       Perform a trial run with no changes made"
+    echo -e "  -o, --os ${BOLD}NAME${RESET}       Specify the operating system\n                      ${BOLD}Allowed${RESET}: $valid_os_list"
+    echo "  -i, --install       Install the program"
+    echo "  -r, --remove        Uninstall the program"
+    echo "      --test          Run built-in argument parser tests"
+    echo
+    echo -e "${BOLD}Arguments:${RESET}"
+    echo "  names of the programs"
+    echo
+    echo -e "${BOLD}Examples:${RESET}"
+    echo -e "  ${GREEN}${0##*/}${RESET} ${YELLOW}--install -v --os mac${RESET} ${MAGENTA}htop wget curl${RESET}"
+    echo -e "  ${GREEN}${0##*/}${RESET} ${YELLOW}--remove --os arch${RESET} ${MAGENTA}htop${RESET}"
+}
+
+###############################################################################
+# State Variables
+###############################################################################
+want_help=false
+verbose=false
+dry_run=false
+install=false
+remove=false
+run_tests=false
+os=""
+command=()
+
+###############################################################################
+# OS Validation
+###############################################################################
+is_valid_os() {
+    local needle="$1"
+    for o in "${valid_oses[@]}"; do
+        [[ "$needle" == "$o" ]] && return 0
+    done
+    return 1
+}
+
+###############################################################################
+# Argument Parsing
+###############################################################################
+while [[ "$#" -gt 0 ]]; do
+    case "$1" in
+
+        -h|--help)
+            want_help=true
+            shift
+            ;;
+
+        -v|--verbose)
+            LOG_LEVEL="debug"
+            shift
+            ;;
+
+        -d|--dry-run)
+            dry_run=true
+            shift
+            ;;
+
+        --test)
+            run_tests=true
+            shift
+            ;;
+
+        -o|--os)
+            if [[ -z "$2" || "$2" == -* ]]; then
+                log error "--os requires a value"
+                exit 1
+            fi
+            if ! is_valid_os "$2"; then
+                log error "Invalid OS: '$2'"
+                log info  "Valid options: ${valid_oses[*]}"
+                exit 1
+            fi
+            os="$2"
+            shift 2
+            ;;
+
+        --os=*)
+            value="${1#*=}"
+            if ! is_valid_os "$value"; then
+                log error "Invalid OS: '$value'"
+                log info  "Valid options: ${valid_oses[*]}"
+                exit 1
+            fi
+            os="$value"
+            shift
+            ;;
+
+        -i|--install)
+            install=true
+            shift
+            ;;
+
+        -r|--remove)
+            remove=true
+            shift
+            ;;
+
+        -*)
+            log error "Unknown option: $1"
+            exit 1
+            ;;
+
+        *)
+            command+=("$1")
+            shift
+            ;;
+    esac
+done
+
+###############################################################################
+# Test Suite
+###############################################################################
+run_tests() {
+    echo -e "${CYAN}Running test suite...${RESET}"
+
+    local passed=0 failed=0
+
+    test_case() {
+        local input="$1"
+        local expected="$2"
+        local output
+
+        output=$(bash "$0" $input 2>&1)
+
+        if echo "$output" | grep -q "$expected"; then
+            echo -e "${GREEN}[PASS]${RESET} $input"
+            ((passed++))
+        else
+            echo -e "${RED}[FAIL]${RESET} $input"
+            echo "  Expected: $expected"
+            echo "  Got:      $output"
+            ((failed++))
+        fi
+    }
+
+    # Tests
+    test_case "--os mac htop" "OS: mac"
+    test_case "--os=arch htop" "OS: arch"
+    test_case "--os banana" "Invalid OS"
+    test_case "--install htop" "Install: true"
+    test_case "--unknown" "Unknown option"
+    test_case "-vd htop" "Dry run: true"
+
+    echo
+    echo "Passed: $passed"
+    echo "Failed: $failed"
+}
+
+if [[ "$run_tests" == true ]]; then
+    run_tests
+    exit 0
+fi
+
+###############################################################################
+# Help
+###############################################################################
+if [[ "$want_help" == true ]]; then
+    show_help
+    exit 0
+fi
+
+###############################################################################
+# Validate command
+###############################################################################
+if [[ ${#command[@]} -eq 0 ]]; then
+    log error "No command specified."
+    log info  "Try: ${0##*/} --help"
+    exit 1
+fi
+
+###############################################################################
+# Main Logic (placeholder)
+###############################################################################
+log info  "Starting execution..."
+log debug "OS: $os"
+log debug "Flags: install=$install remove=$remove dry-run=$dry_run"
+log debug "Command: ${command[*]}"
+
+echo
+echo "Verbose: $([[ $LOG_LEVEL == 'debug' ]] && echo true || echo false)"
+echo "Dry run: $dry_run"
+echo "Install: $install"
+echo "Remove: $remove"
+echo "OS: ${os:-none}"
+echo "Command: ${command[*]}"
+

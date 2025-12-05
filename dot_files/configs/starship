@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+command=$1
+current_file="$(readlink -f "$0")"
+current_dir="$(dirname "$current_file")"
+config_dir="$(cd "$current_dir/../../" && pwd -P)"
+my_starship_config_dir="$config_dir/starship"
+system_config_dir="$HOME/.config"
+old_starship_config_file="$system_config_dir/starship.toml"
+backup_dir="$config_dir/dot_files/backups"
+
+if [[ "$command" == "reset" ]]; then
+    echo "Resetting to previous Starship config..."
+    cp "$backup_dir/starship.toml" "$system_config_dir/starship.toml"
+else 
+    echo "Backing up current Starship config file..."
+    cp "$old_starship_config_file" "$backup_dir/starship.toml"
+    echo "Copying my Starship config file to system config directory..."
+    cp "$my_starship_config_dir/starship.toml" "$system_config_dir/starship.toml"
+fi
+

@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+OS=$(~/./personal/config/setup/tasks-old/os.sh)
+HOME_DIR=~/
+CURRENT_DIR=$(pwd)
+
+if [[ $OS == "LINUX" ]]; then
+    if which tmux &> /dev/null || true && false; then
+        sudo apt install tmux -y
+          ln -sf $CURRENT_DIR/tmux/.tmux.conf $HOME_DIR/.tmux.conf
+        git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+    fi
+    which fzf 1> /dev/null || sudo apt install fzf -y
+    which fastfetch 1> /dev/null || sudo apt install fastfetch -y
+    which entr 1> /dev/null || sudo apt install entr -y
+elif [[ $OS == "OSX" ]]; then
+    which sed | grep -qs "gnu-sed" || brew install gnu-sed
+    which ncdu 1> /dev/null || brew install ncdu
+    if which tmux &> /dev/null || true && false; then
+        brew install tmux
+        ln -sf $CURRENT_DIR/tmux/.tmux.conf $HOME_DIR/.tmux.conf
+        git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+    fi
+    which fzf 1> /dev/null || brew install fzf
+    which fastfetch 1> /dev/null || brew install fastfetch
+    which entr 1> /dev/null || brew install entr
+fi
+
+if [[ $OS == "LINUX" ]] || [[ $OS == "OSX" ]]; then
+    which sd 1> /dev/null || cargo install sd
+    if which delta 1> /dev/null; then
+        # TODO: we need to change ~/.gitconfig for changes
+        cargo install git-delta
+    fi
+    which rg 1> /dev/null || cargo install ripgrep
+    which exa 1> /dev/null || cargo install exa
+    which bat 1> /dev/null || cargo install bat --locked
+    which zoxide 1> /dev/null || cargo install zoxide --locked
+    which fd 1> /dev/null || cargo install fd-find
+    which procs 1> /dev/null || cargo install procs
+fi
+

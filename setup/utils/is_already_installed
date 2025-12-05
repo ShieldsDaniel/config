@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+pkg="$1"
+
+if command -v "$pkg" &> /dev/null; then
+    echo True
+else
+    echo False
+fi

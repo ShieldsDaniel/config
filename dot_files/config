@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+current_file="$(readlink -f "$0")"
+current_dir="$(dirname "$current_file")"
+config_dir="$(cd "$current_dir/../" && pwd -P)"
+log="$current_dir/utils/log"
+show_help="$current_dir/utils/help"
+
+programs_with_configs=($(ls -p "$config_dir/dot_files/configs" | grep -v /))
+programs_list=$(printf "%s\n" "${programs_with_configs[@]}" | paste -sd ',' -)
+
+want_help=false
+dry_run=false
+reset=false
+yes_to_all=false
+command=()
+
+# Argument Parsing
+while [[ "$#" -gt 0 ]]; do
+    case "$1" in
+
+        -h|--help)
+            want_help=true
+            shift
+            ;;
+
+        -d|--dry-run)
+            dry_run=true
+            shift
+            ;;
+
+        -r|--reset)
+            reset=true
+            shift
+            ;;
+
+        -y|--yes)
+            yes_to_all=true
+            shift
+            ;;
+
+        -*)
+            $log error "Unknown option: $1"
+            $show_help
+            exit 1
+            ;;
+
+        *)
+            command+=("$1")
+            shift
+            ;;
+    esac
+done
+
+if [[ ${#command[@]} -eq 0 ]]; then
+    command="all"
+fi
+
+if [[ "$want_help" == true ]]; then
+    $show_help
+    exit 0
+fi
+
+# Main Logic (placeholder)
+$log info  "Starting execution..."
+$log debug "Flags: install=$install remove=$remove dry-run=$dry_run"
+$log debug "Command: ${command[*]}"

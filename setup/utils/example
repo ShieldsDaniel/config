@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+
+program_help() {
+    cat << EOF
+
+Usage: ${0##*/} [OPTIONS] COMMAND
+
+This script does something useful.
+
+Options:
+  -h, --help      Show this help message and exit
+  -v, --verbose   Enable verbose output
+  -f, --file FILE Specify a file to process
+
+Commands:
+  start           Start the service
+  stop            Stop the service
+  status          Show the current status
+
+Examples:
+  ${0##*/} start -v
+  ${0##*/} -f config.txt status
+EOF
+}
+
+start_help() {
+    cat << EOF
+
+Usage: ${0##*/} start [OPTIONS]
+
+This command starts something.
+
+Options:
+  -h, --help      Show this help message and exit
+  -v, --verbose   Enable verbose output
+  -f, --file FILE Specify a file to process
+
+Examples:
+  ${0##*/} start -v
+  ${0##*/} -f config.txt start
+EOF
+}
+
+# Parse arguments
+while [[ "$#" -gt 0 ]]; do
+    case "$1" in
+        -h|--help)
+            show_help=true
+            ;;
+        -v|--verbose)
+            verbose=true
+            ;;
+        -f|--file)
+            file="$2"
+            shift
+            ;;
+        start|stop|status)
+            command="$1"
+            ;;
+        *)
+            echo "Unknown option or command: $1"
+            echo "Try '${0##*/} --help' for more information."
+            exit 1
+            ;;
+    esac
+    shift
+done
+
+if [[ "$show_help" == true ]]; then
+    if [[ -n "$command" ]]; then
+        case "$command" in
+            start)
+                start_help
+                ;;
+            stop|status)
+                program_help
+                ;;
+            *)
+                program_help
+                ;;
+        esac
+    else
+        program_help
+    fi
+    exit 0
+fi
+
+# Your main script logic would go here
+echo "Verbose: ${verbose:-false}"
+echo "File: ${file:-none}"
+echo "Command: ${command:-none}"

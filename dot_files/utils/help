@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+current_file="$(readlink -f "$0")"
+current_dir="$(dirname "$current_file")"
+config_dir="$(cd "$current_dir/../../" && pwd -P)"
+
+programs_with_configs=($(ls -p "$config_dir/dot_files/configs" | grep -v /))
+programs_list=$(printf "%s\n" "${programs_with_configs[@]}" | paste -sd ',' -)
+
+# Colors
+RED="\033[31m"
+GREEN="\033[32m"
+YELLOW="\033[33m"
+BLUE="\033[34m"
+MAGENTA="\033[35m"
+CYAN="\033[36m"
+RESET="\033[0m"
+BOLD="\033[1m"
+
+echo -e "${BOLD}Usage:${RESET} ${GREEN}config${RESET} ${YELLOW}[OPTIONS...]${RESET} ${MAGENTA}[ARGS...]${RESET}"
+echo
+echo -e "${BOLD}Options:${RESET}"
+echo -e "  ${YELLOW}-h, --help${RESET}             Show this help message and exit"
+echo -e "  ${YELLOW}-d, --dry-run${RESET}          Perform a trial run with no changes made"
+echo -e "  ${YELLOW}-r, --reset${RESET}            Reset to backed up config"
+echo -e "  ${YELLOW}-y, --yes${RESET}              Automatic yes to prompts"
+echo
+echo -e "${BOLD}Arguments:${RESET}"
+echo "  names of the programs to update config files for."
+echo -e "\t${BOLD}Allowed${RESET}: ${MAGENTA}all,$programs_list${RESET}"
+
+echo
+echo -e "${BOLD}Examples:${RESET}"
+echo -e "  ${GREEN}config${RESET} ${YELLOW}-y -d${RESET} ${MAGENTA}neovim${RESET}"
+echo -e "  ${GREEN}config${RESET} ${YELLOW}--reset --yes${RESET} ${MAGENTA}htop${RESET}"

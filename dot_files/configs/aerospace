@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+command=$1
+current_file="$(readlink -f "$0")"
+current_dir="$(dirname "$current_file")"
+config_dir="$(cd "$current_dir/../../" && pwd -P)"
+my_aerospace_config_dir="$config_dir/aerospace"
+system_config_dir="$HOME/.config"
+old_aerospace_config_dir="$system_config_dir/aerospace"
+backup_dir="$config_dir/dot_files/backups"
+
+if [[ "$command" == "reset" ]]; then
+    echo "Resetting to previous Aerospace config..."
+    cp -r "$backup_dir/aerospace" "$system_config_dir"
+else 
+    echo "Backing up current Aerospace config..."
+    cp -r "$old_aerospace_config_dir" "$backup_dir"
+    echo "Copying my Aerospace config to system config directory..."
+    cp -r "$my_aerospace_config_dir" "$system_config_dir"
+fi
