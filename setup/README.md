@@ -38,6 +38,10 @@ which git 1> /dev/null || sudo apt install git -y; git clone git@github.com:Shie
 * Create backup of any existing configs/dotfiles that will be replaced
 * Allow for rolling back
 
+#### TODO:
+
+https://github.com/brigand/fast-nvm-fish
+
 -------------------------------------------------------------------------------------
 
 

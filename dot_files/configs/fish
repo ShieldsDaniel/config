@@ -1,2 +1,38 @@
 #!/usr/bin/env bash
 
+command=$1
+current_file="$(readlink -f "$0")"
+current_dir="$(dirname "$current_file")"
+config_dir="$(cd "$current_dir/../../" && pwd -P)"
+my_fish_config_dir="$config_dir/fish"
+system_config_dir="$HOME/.config"
+old_fish_config_dir="$system_config_dir/fish"
+backup_dir="$config_dir/dot_files/backups"
+run_confirm="$config_dir/dot_files/utils/run_confirm_command"
+parse_arg="$config_dir/dot_files/utils/parse_arg"
+
+reset=$($parse_arg "reset" "$@")
+yes_to_all=$($parse_arg "yes-to-all" "$@")
+dry_run=$($parse_arg "dry-run" "$@")
+
+if [[ "$yes_to_all" == true ]]; then
+    yes_to_all="--yes"
+else
+    yes_to_all=""
+fi
+if [[ "$dry_run" == true ]]; then
+    dry_run="--dry-run"
+else
+    dry_run=""
+fi
+
+if [[ "$reset" == true ]]; then
+    echo "Resetting to previous Fish config..."
+    $run_confirm "$yes_to_all" "$dry_run" -- cp -r "$backup_dir/fish" "$system_config_dir" || exit 1
+else 
+    echo "Backing up current Fish config..."
+    $run_confirm "$yes_to_all" "$dry_run" -- cp -r "$old_fish_config_dir" "$backup_dir" || exit 1
+    echo "Copying my Fish config to system config directory..."
+    $run_confirm "$yes_to_all" "$dry_run" -- cp -r "$my_fish_config_dir" "$system_config_dir" || exit 1
+fi
+
