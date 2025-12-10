@@ -18,7 +18,7 @@ if status is-interactive
         "/opt/homebrew/bin/bash"
 
     # Vim aliases and global variables to change everything to use neovim
-    if which nvim >/dev/null
+    if which nvim >/dev/null 2>/dev/null
         set -U VISUAL nvim
         set -U VIMCONFIG ~/.config/nvim
         set -U VIMDATA ~/.local/share/nvim
@@ -34,7 +34,7 @@ if status is-interactive
     alias rm="rm -rfi"
 
     # Change default ls command to use exa
-    if which exa >/dev/null
+    if which exa >/dev/null 2>/dev/null
         # ls aliases
         alias ls="exa"
         alias la="exa -lah"
@@ -43,13 +43,13 @@ if status is-interactive
     end
 
     # Change default cat command to use bat
-    if which bat >/dev/null
+    if which bat >/dev/null 2>/dev/null
         # cat alias
         alias cat="bat"
     end
 
     # Setup Mac brew update alias
-    if which brew >/dev/null
+    if which brew >/dev/null 2>/dev/null
         alias bud="brew update && brew upgrade && brew doctor && brew cleanup"
     end
 
@@ -58,7 +58,7 @@ if status is-interactive
     alias gbranches="git branch -a | cat"
 
     # Change default cd command to use zoxide
-    if which zoxide >/dev/null
+    if which zoxide >/dev/null 2>/dev/null
         # cd aliases
         alias cd="z"
         alias zz="z -"
@@ -66,18 +66,24 @@ if status is-interactive
         eval "$(zoxide init fish)"
     end
 
-    if which python3 >/dev/null
+    if which python3 >/dev/null 2>/dev/null
         alias python="python3"
     end
 
     # Ensure NVM is using default node 
-    nvm use node
+    set nvm_version $(nvm --version >/dev/null 2>/dev/null)
+    if set -q nvm_version && test -n "$nvm_version"
+        echo "hi there"
+        nvm use node
+    end
     
+    # Since TMP is having trouble running from tmux config, just do it here
+    if test -e "$HOME/.tmux/plugins/tpm/tpm"
+        bash "$HOME/.tmux/plugins/tpm/tpm"
+    end
+
     # Enable vim mode
     fish_vi_key_bindings
-
-    # Since TMP is having trouble running from tmux config, just do it here
-    bash "$HOME/.tmux/plugins/tpm/tpm"
 
     # Initialize starship
     starship init fish | source
