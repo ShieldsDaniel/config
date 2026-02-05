@@ -28,8 +28,10 @@ if [[ "$reset" == true ]]; then
     echo "Resetting to previous tmux config..."
     $run_confirm "$yes_to_all" "$dry_run" -- cp "$backup_dir/tmux.conf" "$HOME/.tmux.conf" || exit 1
 else 
-    echo "Backing up current tmux config file..."
-    $run_confirm "$yes_to_all" "$dry_run" -- cp "$HOME/.tmux.conf" "$backup_dir/tmux.conf" || exit 1
+    if [[ -f "$HOME/.tmux.conf" ]]; then
+        echo "Backing up current tmux config file..."
+        $run_confirm "$yes_to_all" "$dry_run" -- cp "$HOME/.tmux.conf" "$backup_dir/tmux.conf" || exit 1
+    fi
     echo "Copying my tmux config file to system config directory..."
     $run_confirm "$yes_to_all" "$dry_run" -- cp "$my_tmux_config_dir/tmux.conf" "$HOME/.tmux.conf" || exit 1
 fi
