@@ -15,7 +15,8 @@ if status is-interactive
         "$HOME/Library/Python/3.9/bin" \
         "$HOME/.local/bin" \
         "/opt/homebrew/bin" \
-        "/opt/homebrew/bin/bash"
+        "/opt/homebrew/bin/bash" \
+        "/opt/homebrew/opt/make/libexec/gnubin"
 
     # Vim aliases and global variables to change everything to use neovim
     if which nvim >/dev/null
