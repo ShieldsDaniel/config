@@ -29,8 +29,10 @@ if [[ "$reset" == true ]]; then
     echo "Resetting to previous Aerospace config..."
     $run_confirm "$yes_to_all" "$dry_run" -- cp -r "$backup_dir/aerospace" "$system_config_dir" || exit 1
 else 
-    echo "Backing up current Aerospace config..."
-    $run_confirm "$yes_to_all" "$dry_run" -- cp -r "$old_aerospace_config_dir" "$backup_dir" || exit 1
+    if [[ -d "$old_aerospace_config_dir" ]]; then
+        echo "Backing up current Aerospace config..."
+        $run_confirm "$yes_to_all" "$dry_run" -- cp -r "$old_aerospace_config_dir" "$backup_dir" || exit 1
+    fi
 
     echo "Copying my Aerospace config to system config directory..."
     $run_confirm "$yes_to_all" "$dry_run" -- cp -r "$my_aerospace_config_dir" "$system_config_dir" || exit 1

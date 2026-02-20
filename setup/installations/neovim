@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-OS=$(~/./personal/config/setup/tasks-old/os.sh)
+# OS=$(~/./personal/config/setup/tasks-old/os.sh)
+OS="OSX"
 
 if [[ $OS == "LINUX" ]]; then
     sudo apt-get install ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl doxygen

@@ -27,8 +27,10 @@ if [[ "$reset" == true ]]; then
     echo "Resetting to previous zsh config..."
     $run_confirm "$yes_to_all" "$dry_run" -- cp "$backup_dir/zshrc" "$HOME/.zshrc" || exit 1
 else 
-    echo "Backing up current zsh config file..."
-    $run_confirm "$yes_to_all" "$dry_run" -- cp "$HOME/.zshrc" "$backup_dir/zshrc" || exit 1
+    if [[ -f "$HOME/.zshrc" ]]; then
+        echo "Backing up current zsh config file..."
+        $run_confirm "$yes_to_all" "$dry_run" -- cp "$HOME/.zshrc" "$backup_dir/zshrc" || exit 1
+    fi
     echo "Copying my zsh config file to system config directory..."
     $run_confirm "$yes_to_all" "$dry_run" -- cp "$my_zsh_config_dir/zshrc" "$HOME/.zshrc" || exit 1
 fi

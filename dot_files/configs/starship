@@ -30,8 +30,10 @@ if [[ "$reset" == true ]]; then
     echo "Resetting to previous Starship config..."
     $run_confirm "$yes_to_all" "$dry_run" -- cp "$backup_dir/starship.toml" "$system_config_dir/starship.toml" || exit 1
 else 
-    echo "Backing up current Starship config file..."
-    $run_confirm "$yes_to_all" "$dry_run" -- cp "$old_starship_config_file" "$backup_dir/starship.toml" || exit 1
+    if [[ -f "$old_starship_config_file" ]]; then
+        echo "Backing up current Starship config file..."
+        $run_confirm "$yes_to_all" "$dry_run" -- cp "$old_starship_config_file" "$backup_dir/starship.toml" || exit 1
+    fi
     echo "Copying my Starship config file to system config directory..."
     $run_confirm "$yes_to_all" "$dry_run" -- cp "$my_starship_config_dir/starship.toml" "$system_config_dir/starship.toml" || exit 1
 fi

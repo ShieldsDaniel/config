@@ -9,9 +9,9 @@ if status is-interactive
         "$HOME/bin" \
         "/usr/local/bin" \
         "/usr/local/sbin" \
-        "$HOME/.yarn/bin" \
         "$HOME/.config/yarn/global/node_modules/.bin" \
         "$HOME/personal/private-scripts/bash" \
+        "$HOME/personal/private-scripts/bin" \
         "$HOME/Library/Python/3.9/bin" \
         "$HOME/.local/bin" \
         "/opt/homebrew/bin" \
@@ -72,9 +72,8 @@ if status is-interactive
     end
 
     # Ensure NVM is using default node 
-    set nvm_version $(nvm --version >/dev/null 2>/dev/null)
+    set nvm_version $(nvm --version 2>/dev/null)
     if set -q nvm_version && test -n "$nvm_version"
-        echo "hi there"
         nvm use node
     end
     
@@ -83,8 +82,7 @@ if status is-interactive
         bash "$HOME/.tmux/plugins/tpm/tpm"
     end
 
-    # Enable vim mode
-    fish_vi_key_bindings
+    set --global fish_key_bindings fish_default_key_bindings
 
     # Initialize starship
     starship init fish | source
@@ -93,3 +91,4 @@ if status is-interactive
     fastfetch
 end
 
+eval "$(/opt/homebrew/bin/brew shellenv fish)"

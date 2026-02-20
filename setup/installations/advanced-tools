@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-OS=$(~/./personal/config/setup/tasks-old/os.sh)
+# OS=$(~/./personal/config/setup/tasks-old/os.sh)
+OS="OSX"
 HOME_DIR=~/
 CURRENT_DIR=$(pwd)
 
